@@ -3,9 +3,9 @@ const axios = require("axios");
 const ethers = require("ethers");
 
 // URL API untuk klaim wheel, cek poin, dan cek rank
-const API_WHEEL_CLAIM = "https://www.alphabot.app/api/platformAirdrops/wheel";
-const API_POINTS = "https://www.alphabot.app/api/platformAirdrops/points";  // Endpoint untuk cek poin
-const API_RANK = "https://www.alphabot.app/api/platformAirdrops/leaderboard";  // Endpoint untuk cek rank
+const API_WHEEL_CLAIM = "https://www.alphabot.app/api/wheel";
+const API_POINTS = "https://www.alphabot.app/api/points";  // Endpoint untuk cek poin
+const API_RANK = "https://www.alphabot.app/api/leaderboard";  // Endpoint untuk cek rank
 
 // Mengambil private key dari file .env
 const PRIVATE_KEYS = process.env.PRIVATE_KEYS ? process.env.PRIVATE_KEYS.split(",") : [];
