@@ -2,7 +2,7 @@
   "name": "alphabot-login",
   "version": "1.0.0",
   "description": "Script login ke AlphaBot menggunakan API",
-  "main": "login_alphabot.js",
+  "main": "daily.js",
   "scripts": {
     "start": "node daily.js"
   },
