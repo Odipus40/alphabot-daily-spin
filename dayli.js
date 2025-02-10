@@ -1,11 +1,11 @@
-require("dotenv").config();
 const axios = require("axios");
 const ethers = require("ethers");
+require("dotenv").config();
 
 // URL API untuk klaim wheel, cek poin, dan cek rank
 const API_WHEEL_CLAIM = "https://www.alphabot.app/api/auth/session";
-const API_POINTS = "https://www.alphabot.app/api/points";  // Endpoint untuk cek poin
-const API_RANK = "https://www.alphabot.app/api/leaderboard";  // Endpoint untuk cek rank
+const API_POINTS = "https://www.alphabot.app/api/platformAirdrops/points";  // Endpoint untuk cek poin
+const API_RANK = "https://www.alphabot.app/api/platformAirdrops/leaderboard";  // Endpoint untuk cek rank
 
 // Mengambil private key dari file .env
 const PRIVATE_KEYS = process.env.PRIVATE_KEYS ? process.env.PRIVATE_KEYS.split(",") : [];
