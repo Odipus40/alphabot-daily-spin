@@ -12,11 +12,12 @@ if (!SESSION_TOKEN) {
 async function login() {
     try {
         const response = await axios.get(API_URL, {
-            headers: {
-                'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`
-            },
-            withCredentials: true // Pastikan cookie dikirim dalam request
-        });
+    headers: {
+        'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
+    },
+    withCredentials: true
+});
 
         const data = response.data.data;
         
