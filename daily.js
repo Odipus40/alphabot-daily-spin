@@ -22,8 +22,16 @@ async function login() {
         });
 
         if (response.status === 200) {
+            const data = response.data;
+            
+            // Cek apakah struktur yang diharapkan ada
+            const filteredData = {
+                _id: data?.user?._id || "Tidak ditemukan",
+                address: data?.user?.address || "Tidak ditemukan"
+            };
+
             console.log("\n✅ Login Berhasil!");
-            console.log("Full Response Data:", response.data); // Tampilkan seluruh respons
+            console.log("Response Data:", filteredData);
         } else {
             console.log("\n⚠️ Login mungkin gagal. Status:", response.status);
         }
