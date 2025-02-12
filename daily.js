@@ -42,7 +42,8 @@ async function login() {
             console.log(`⚠️ [${getCurrentTimestamp()}] Login mungkin gagal. Status: ${response.status}`);
         }
     } catch (error) {
-        console.error(`❌ [${getCurrentTimestamp()}] Login Gagal:`, error.response ? error.response.data : error.message);
+        console.error(`❌ [${getCurrentTimestamp()}] Login Gagal:`, error);
+        process.exit(1); // Hentikan script jika login gagal
     }
 }
 
@@ -59,16 +60,10 @@ async function spinWheel() {
 
         if (response.status === 200) {
             const items = response.data?.items || [];
-            let result = "Tidak diketahui";
-            
-            if (items.length > 0) {
-                result = items.map(item => item.option).join(', ');
-            }
+            let result = items.length > 0 ? items.map(item => item.option).join(', ') : "Tidak diketahui";
 
             console.log(`🎡 [${getCurrentTimestamp()}] Spin Wheel Berhasil!`);
             console.log(`🔹 [${getCurrentTimestamp()}] Hasil: ${result}`);
-            
-            await getPoints();
         } else {
             console.log(`⚠️ [${getCurrentTimestamp()}] Spin Wheel mungkin gagal. Status: ${response.status}`);
         }
@@ -76,9 +71,12 @@ async function spinWheel() {
         if (error.response && error.response.status === 400) {
             console.error(`❌ [${getCurrentTimestamp()}] Error: Anda sudah melakukan daily spin wheel hari ini. Coba lagi besok!`);
         } else {
-            console.error(`❌ [${getCurrentTimestamp()}] Spin Wheel Gagal:`, error.response ? error.response.data : error.message);
+            console.error(`❌ [${getCurrentTimestamp()}] Spin Wheel Gagal:`, error);
         }
     }
+
+    // Tetap jalankan getPoints() meskipun spin gagal atau sudah dilakukan
+    await getPoints();
 }
 
 async function getPoints() {
@@ -100,7 +98,7 @@ async function getPoints() {
             console.log(`⚠️ [${getCurrentTimestamp()}] Gagal mendapatkan informasi poin. Status: ${response.status}`);
         }
     } catch (error) {
-        console.error(`❌ [${getCurrentTimestamp()}] Gagal mendapatkan data poin:`, error.response ? error.response.data : error.message);
+        console.error(`❌ [${getCurrentTimestamp()}] Gagal mendapatkan data poin:`, error);
     }
 }
 
@@ -110,7 +108,7 @@ async function startRoutine() {
         displayHeader();
         await login();
     } catch (error) {
-        console.error(`🚨 [${getCurrentTimestamp()}] Terjadi error dalam eksekusi script:`, error.message);
+        console.error(`🚨 [${getCurrentTimestamp()}] Terjadi error dalam eksekusi script:`, error);
     }
 
     // Menampilkan waktu eksekusi berikutnya dalam format lengkap
