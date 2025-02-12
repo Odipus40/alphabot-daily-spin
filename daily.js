@@ -62,8 +62,15 @@ async function spinWheel() {
             console.log("⚠️ Spin Wheel tidak memberikan respon yang diharapkan.");
         }
     } catch (error) {
-        console.error("❌ Spin Wheel Gagal:", error.response ? error.response.data : error.message);
+    if (error.response) {
+        console.error("❌ Spin Wheel Gagal:");
+        console.error("🔹 Status Code:", error.response.status);
+        console.error("🔹 Response Data:", JSON.stringify(error.response.data, null, 2));
+        console.error("🔹 Headers:", JSON.stringify(error.response.headers, null, 2));
+    } else if (error.request) {
+        console.error("❌ Tidak ada respon dari server.");
+        console.error("🔹 Request Data:", error.request);
+    } else {
+        console.error("❌ Error:", error.message);
     }
 }
-
-spinWheel();
