@@ -1,45 +1,40 @@
-require('dotenv').config();
+require('dotenv').config(); // Load variabel lingkungan dari .env
 const axios = require('axios');
 
-const loginUrl = 'https://www.alphabot.app/api/auth/session';
-const privateKey = process.env.PRIVATE_KEY;
+const API_URL = 'https://www.alphabot.app/api/platformAirdrops/';
+const SESSION_TOKEN = process.env.SESSION_TOKEN;
 
-if (!privateKey) {
-    console.error("❌ Private Key tidak ditemukan. Pastikan file .env telah diisi dengan PRIVATE_KEY.");
+if (!SESSION_TOKEN) {
+    console.error("Error: SESSION_TOKEN tidak ditemukan di .env");
     process.exit(1);
 }
 
-const login = async () => {
-    console.log("\n⏳ Memulai proses login ke AlphaBot...");
-
+async function login() {
     try {
-        const response = await axios.post(loginUrl, {
-            private_key: privateKey
-        }, {
+        const response = await axios.get(API_URL, {
             headers: {
-                'User-Agent': 'Mozilla/5.0',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+                'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`
+            },
+            withCredentials: true // Pastikan cookie dikirim dalam request
         });
 
-        if (response.status === 200 && response.data.session_token) {
-            console.log(`✅ Login berhasil! Token sesi: ${response.data.session_token}`);
-
-            // Preview user info jika tersedia
-            if (response.data.user) {
-                console.log("\n👤 **User Info:**");
-                console.log(`   🔹 Email: ${response.data.user.email || "Tidak tersedia"}`);
-                console.log(`   🔹 ID: ${response.data.user._id || "Tidak tersedia"}`);
-            } else {
-                console.log("⚠️ User info tidak ditemukan dalam response.");
-            }
-        } else {
-            console.error(`⚠️ Login gagal, status: ${response.status}`);
+        const data = response.data.data;
+        
+        if (!data) {
+            console.log("Data tidak ditemukan!");
+            return;
         }
+
+        console.log("\n=== Preview Data ===");
+        console.log(`ID: ${data._id}`);
+        console.log(`Platform Airdrop ID: ${data.platformAirdropId}`);
+        console.log(`Rank: ${data.rank}`);
+        console.log(`Total Points: ${data.totalPoints}`);
+        console.log(`User ID: ${data.userId}`);
+
     } catch (error) {
-        console.error("❌ Terjadi kesalahan saat login:", error.response?.data || error.message);
+        console.error("Login Gagal:", error.response ? error.response.data : error.message);
     }
-};
+}
 
 login();
