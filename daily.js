@@ -63,7 +63,7 @@ async function spinWheel() {
             }
             
             await getPoints();
-        } else if (response.status === 304) {
+        } else if (response.status === 200) {
             console.log("⚠️ Tidak ada perubahan. Spin Wheel tidak tersedia saat ini.");
         } else {
             console.log("⚠️ Spin Wheel mungkin gagal. Status:", response.status);
