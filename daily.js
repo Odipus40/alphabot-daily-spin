@@ -17,7 +17,7 @@ if (!SESSION_TOKEN) {
 }
 
 function getCurrentTime() {
-    return moment().tz('Asia/Jakarta').format('DD/MM/YYYY, HH:mm:ss');
+    return moment().tz('Asia/Jakarta').format('HH:mm:ss');
 }
 
 function getCurrentDate() {
@@ -116,9 +116,9 @@ async function startRoutine() {
 
     await login();
 
-    // Menampilkan waktu eksekusi berikutnya
-    const nextRun = new Date(Date.now() + WAIT_TIME).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-    console.log(`\n⏳ Script will run again on: ${nextRun} (WIB)\n`);
+    // Menampilkan waktu eksekusi berikutnya dalam format lengkap
+    const nextRun = moment().tz('Asia/Jakarta').add(24, 'hours').format('dddd, DD MMMM YYYY [pukul] HH:mm:ss');
+    console.log(`\n⏳ Menunggu 24 jam untuk menjalankan ulang pada: ${nextRun} WIB\n`);
 
     // Tunggu 24 jam sebelum menjalankan ulang
     await new Promise(resolve => setTimeout(resolve, WAIT_TIME));
