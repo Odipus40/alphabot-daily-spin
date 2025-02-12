@@ -42,7 +42,7 @@ async function login() {
 
 async function spinWheel() {
     try {
-        const response = await axios.post(SPIN_API, {
+        const response = await axios.post(SPIN_API, {}, {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
                 'User-Agent': 'Mozilla/5.0',
@@ -53,13 +53,14 @@ async function spinWheel() {
 
         if (response.status === 200) {
             const items = response.data?.items || [];
+            let result = "Tidak diketahui";
+            
             if (items.length > 0) {
-                const reward = items[Math.floor(Math.random() * items.length)];
-                console.log(`\n🎡 Spin Wheel Berhasil!`);
-                console.log(`🔹 Hasil: ${reward.option} points (${reward.level || 'unknown'})`);
-            } else {
-                console.log("⚠️ Spin Wheel tidak mengembalikan hasil yang valid.");
+                result = items.map(item => item.option).join(', ');
             }
+
+            console.log(`\n🎡 Spin Wheel Berhasil!`);
+            console.log(`🔹 Hasil: ${result}`);
             
             await getPoints();
         } else {
@@ -101,7 +102,7 @@ async function startLoop() {
     while (true) {
         await login();
         console.log("\n🕒 Menunggu 24 jam untuk menjalankan ulang...");
-        await new Promise(resolve => setTimeout(resolve, 24 * 60 * 60 * 1000)); // Tunggu 24 jam
+        await new Promise(resolve => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
 }
 
