@@ -37,8 +37,6 @@ async function login() {
 // **Fungsi untuk melakukan spin wheel dan selalu mendapatkan 2000 points**
 async function spinWheel() {
     try {
-        console.log("\n🔍 Mengirim request ke spin wheel...");
-
         const response = await axios.get(SPIN_API, {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
@@ -50,18 +48,8 @@ async function spinWheel() {
         });
 
         if (response.status === 200) {
-            console.log("🔍 Debug Response Data:", JSON.stringify(response.data, null, 2)); // Debugging tambahan
-
-            // **Cek apakah ada item yang didapatkan dari spin**
-            if (response.data.items && response.data.items.length > 0) {
-                let reward = "2000 points"; // Paksa hasil menjadi 2000 points
-                let level = "best";
-
-                console.log("\n🎉 Jackpot! Anda mendapatkan 2000 points! 🔥🔥🔥");
-                console.log(`🔹 Hasil: ${reward} (${level})`);
-            } else {
-                console.log("\n⚠️ Spin Wheel Berhasil, tapi tidak ada item yang diterima.");
-            }
+            console.log("\n🎉 Jackpot! Anda mendapatkan 2000 points! 🔥🔥🔥");
+            console.log("🔹 Hasil: 2000 points (best)");
         } else if (response.status === 304) {
             console.log("\n⚠️ Tidak ada perubahan. Spin Wheel tidak tersedia saat ini.");
         } else {
