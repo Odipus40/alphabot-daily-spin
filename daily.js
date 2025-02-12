@@ -2,7 +2,7 @@ require('dotenv').config();
 const axios = require('axios');
 
 const LOGIN_API = 'https://www.alphabot.app/api/auth/session';
-const SPIN_API = 'https://www.alphabot.app/api/platformAirdrops/wheel';
+const SPIN_URL = 'https://www.alphabot.app/api/platformAirdrops/wheel';
 const SESSION_TOKEN = process.env.SESSION_TOKEN;
 
 if (!SESSION_TOKEN) {
