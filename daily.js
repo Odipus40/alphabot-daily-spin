@@ -15,21 +15,15 @@ async function login() {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
-                'Referer': 'https://www.alphabot.app/boost',
+                'Referer': 'https://www.alphabot.app/',
                 'Origin': 'https://www.alphabot.app'
             },
             withCredentials: true
         });
 
         if (response.status === 200) {
-            const { user } = response.data;
-
             console.log("\n✅ Login Berhasil!");
-            console.log("Response Data:", {
-                email: user?.email,
-                _id: user?._id,
-                address: user?.address
-            });
+            console.log("Full Response Data:", response.data); // Tampilkan seluruh respons
         } else {
             console.log("\n⚠️ Login mungkin gagal. Status:", response.status);
         }
