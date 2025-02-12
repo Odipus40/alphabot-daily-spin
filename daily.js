@@ -1,6 +1,8 @@
 require('dotenv').config();
 const axios = require('axios');
 const moment = require('moment-timezone');
+const readline = require('readline');
+require('colors');
 const { displayHeader } = require('./helpers');
 
 const LOGIN_API = 'https://www.alphabot.app/api/auth/session';
