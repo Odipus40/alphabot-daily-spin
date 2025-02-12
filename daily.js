@@ -111,10 +111,12 @@ async function getPoints() {
 
 // Fungsi utama untuk menjalankan bot secara otomatis setiap hari
 async function startRoutine() {
-    console.clear();
-    displayHeader();
-
-    await login();
+    try {
+        displayHeader();
+        await login();
+    } catch (error) {
+        console.error("🚨 Terjadi error dalam eksekusi script:", error.message);
+    }
 
     // Menampilkan waktu eksekusi berikutnya dalam format lengkap
     const nextRun = moment().tz('Asia/Jakarta').add(24, 'hours').format('dddd, DD MMMM YYYY [pukul] HH:mm:ss');
@@ -126,6 +128,3 @@ async function startRoutine() {
     // Jalankan ulang
     await startRoutine();
 }
-
-// Jalankan pertama kali
-startRoutine();
