@@ -63,8 +63,8 @@ async function spinWheel() {
             console.log("\n⚠️ Spin Wheel mungkin gagal. Status:", response.status);
         }
     } catch (error) {
-        console.error("\n❌ Spin Wheel Gagal:", error.response ? error.response.data : error.message);
-    }
+    console.error("\n❌ Spin Wheel Gagal:", error.response?.data || error.message);
+  }
 }
 
 // Jalankan proses login dan spin wheel
