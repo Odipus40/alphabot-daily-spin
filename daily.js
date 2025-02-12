@@ -46,7 +46,7 @@ async function spinWheel() {
             withCredentials: true
         });
 
-        if (response.status === 200) {
+        if (response.status === 304) {
             const result = response.data?.items?.find(item => item.level === "best") || {};
             console.log(`\n🎉 Spin Berhasil! Kamu mendapatkan: ${result.option || "Hadiah tidak ditemukan"}`);
         } else {
