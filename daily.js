@@ -12,26 +12,15 @@ if (!SESSION_TOKEN) {
 async function login() {
     try {
         const response = await axios.get(API_URL, {
-    headers: {
-        'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
-    },
-    withCredentials: true
-});
+            headers: {
+                'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
+            },
+            withCredentials: true
+        });
 
-        const data = response.data.data;
-        
-        if (!data) {
-            console.log("Data tidak ditemukan!");
-            return;
-        }
-
-        console.log("\n=== Preview Data ===");
-        console.log(`ID: ${data._id}`);
-        console.log(`Platform Airdrop ID: ${data.platformAirdropId}`);
-        console.log(`Rank: ${data.rank}`);
-        console.log(`Total Points: ${data.totalPoints}`);
-        console.log(`User ID: ${data.userId}`);
+        console.log("Login Berhasil!");
+        console.log("Response Data:", response.data);
 
     } catch (error) {
         console.error("Login Gagal:", error.response ? error.response.data : error.message);
