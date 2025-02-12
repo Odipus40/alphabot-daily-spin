@@ -42,7 +42,7 @@ async function login() {
 
 async function spinWheel() {
     try {
-        const response = await axios.get(SPIN_API, {
+        const response = await axios.post(SPIN_API, {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
                 'User-Agent': 'Mozilla/5.0',
@@ -53,18 +53,15 @@ async function spinWheel() {
 
         if (response.status === 200) {
             const items = response.data?.items || [];
-            const jackpot = items.find(item => item.option.includes("2000 points") && item.level === "best");
-
-            if (jackpot) {
-                console.log("\n🎉 Jackpot! Anda mendapatkan 2000 points! 🔥🔥🔥");
-                console.log("🔹 Hasil: 2000 points (best)");
+            if (items.length > 0) {
+                const reward = items[Math.floor(Math.random() * items.length)];
+                console.log(`\n🎡 Spin Wheel Berhasil!`);
+                console.log(`🔹 Hasil: ${reward.option} points (${reward.level || 'unknown'})`);
             } else {
-                console.log("\n🎡 Spin Wheel Berhasil!");
+                console.log("⚠️ Spin Wheel tidak mengembalikan hasil yang valid.");
             }
             
             await getPoints();
-        } else if (response.status === 200) {
-            console.log("⚠️ Tidak ada perubahan. Spin Wheel tidak tersedia saat ini.");
         } else {
             console.log("⚠️ Spin Wheel mungkin gagal. Status:", response.status);
         }
