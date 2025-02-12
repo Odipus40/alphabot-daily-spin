@@ -1,7 +1,6 @@
 require('dotenv').config();
 const axios = require('axios');
 const moment = require('moment-timezone');
-const readline = require('readline');
 require('colors');
 const { displayHeader } = require('./helpers');
 
@@ -9,6 +8,8 @@ const LOGIN_API = 'https://www.alphabot.app/api/auth/session';
 const SPIN_API = 'https://www.alphabot.app/api/platformAirdrops/663c16768d466b80012cb656/wheel';
 const POINTS_API = 'https://www.alphabot.app/api/platformAirdrops/663c16768d466b80012cb656/points';
 const SESSION_TOKEN = process.env.SESSION_TOKEN;
+
+const WAIT_TIME = 24 * 60 * 60 * 1000; // 24 jam dalam milidetik
 
 if (!SESSION_TOKEN) {
     console.error("❌ Error: SESSION_TOKEN tidak ditemukan di .env");
@@ -19,9 +20,16 @@ function getCurrentTime() {
     return moment().tz('Asia/Jakarta').format('DD/MM/YYYY, HH:mm:ss');
 }
 
+function getCurrentDate() {
+    return moment().tz('Asia/Jakarta').format('dddd, DD MMMM YYYY');
+}
+
 async function login() {
+    console.log(`📅 Tanggal: ${getCurrentDate()}`);
+    console.log(`🕒 Waktu: ${getCurrentTime()}`);
+
     try {
-        console.log(`\n🕒 [${getCurrentTime()}] Memulai proses login...`);
+        console.log(`\n🔑 Memulai proses login...`);
         const response = await axios.get(LOGIN_API, {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
@@ -101,14 +109,23 @@ async function getPoints() {
     }
 }
 
-async function startLoop() {
-    displayHeader(); // Menampilkan header sebelum memulai loop
+// Fungsi utama untuk menjalankan bot secara otomatis setiap hari
+async function startRoutine() {
+    console.clear();
+    displayHeader();
 
-    while (true) {
-        await login();
-        console.log("\n🕒 Menunggu 24 jam untuk menjalankan ulang...");
-        await new Promise(resolve => setTimeout(resolve, 24 * 60 * 60 * 1000));
-    }
+    await login();
+
+    // Menampilkan waktu eksekusi berikutnya
+    const nextRun = new Date(Date.now() + WAIT_TIME).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+    console.log(`\n⏳ Script will run again on: ${nextRun} (WIB)\n`);
+
+    // Tunggu 24 jam sebelum menjalankan ulang
+    await new Promise(resolve => setTimeout(resolve, WAIT_TIME));
+
+    // Jalankan ulang
+    await startRoutine();
 }
 
-startLoop();
+// Jalankan pertama kali
+startRoutine();
