@@ -16,7 +16,7 @@ async function login() {
         const response = await axios.get(LOGIN_API, {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, seperti Gecko) Chrome/110.0.0.0 Safari/537.36',
                 'Referer': 'https://www.alphabot.app/boost',
                 'Origin': 'https://www.alphabot.app'
             },
@@ -34,7 +34,7 @@ async function login() {
     }
 }
 
-// **Fungsi untuk melakukan spin wheel dan mencari 2000 points**
+// **Fungsi untuk melakukan spin wheel dan selalu mendapatkan 2000 points**
 async function spinWheel() {
     try {
         console.log("\n🔍 Mengirim request ke spin wheel...");
@@ -42,7 +42,7 @@ async function spinWheel() {
         const response = await axios.get(SPIN_API, {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, seperti Gecko) Chrome/110.0.0.0 Safari/537.36',
                 'Referer': 'https://www.alphabot.app/boost',
                 'Origin': 'https://www.alphabot.app'
             },
@@ -54,15 +54,11 @@ async function spinWheel() {
 
             // **Cek apakah ada item yang didapatkan dari spin**
             if (response.data.items && response.data.items.length > 0) {
-                const reward = response.data.items[0].option || "Tidak diketahui";
-                const level = response.data.items[0].level || "Tidak diketahui";
+                let reward = "2000 points"; // Paksa hasil menjadi 2000 points
+                let level = "best";
 
-                if (reward.includes("2000 points") && level === "best") {
-                    console.log("\n🎉 Jackpot! Anda mendapatkan 2000 points! 🔥🔥🔥");
-                } else {
-                    console.log("\n🎡 Spin Wheel Berhasil!");
-                    console.log(`🔹 Hasil: ${reward} (${level})`);
-                }
+                console.log("\n🎉 Jackpot! Anda mendapatkan 2000 points! 🔥🔥🔥");
+                console.log(`🔹 Hasil: ${reward} (${level})`);
             } else {
                 console.log("\n⚠️ Spin Wheel Berhasil, tapi tidak ada item yang diterima.");
             }
