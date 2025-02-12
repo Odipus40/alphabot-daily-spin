@@ -27,7 +27,11 @@ async function login() {
             const filteredData = {
                 user: {
                     email: user.email || "Tidak ditemukan",
-                    address: user.address || "Tidak ditemukan"
+
+             const filteredData = {
+                address: {
+                    address: user.address || "Tidak ditemukan",
+
                 }
             };
 
