@@ -1,4 +1,4 @@
-require('dotenv').config(); // Load variabel lingkungan dari .env
+require('dotenv').config();
 const axios = require('axios');
 
 const API_URL = 'https://www.alphabot.app/api/platformAirdrops/';
@@ -14,10 +14,16 @@ async function login() {
         const response = await axios.get(API_URL, {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
+                'Referer': 'https://www.alphabot.app',
+                'Origin': 'https://www.alphabot.app'
             },
             withCredentials: true
         });
+
+        if (typeof response.data !== 'object') {
+            throw new Error("Response bukan JSON! Cek apakah API mengembalikan HTML.");
+        }
 
         console.log("Login Berhasil!");
         console.log("Response Data:", response.data);
