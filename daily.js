@@ -15,23 +15,17 @@ async function login() {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
-                'Referer': 'https://www.alphabot.app/',
+                'Referer': 'https://www.alphabot.app/boost',
                 'Origin': 'https://www.alphabot.app'
             },
             withCredentials: true
         });
 
         if (response.status === 200) {
-            const data = response.data;
-            
-            // Cek apakah struktur yang diharapkan ada
-            const filteredData = {
-                _id: data?.user?._id || "Tidak ditemukan",
-                address: data?.user?.address || "Tidak ditemukan"
-            };
+            const address = response.data?.user?.address || "Tidak ditemukan";
 
             console.log("\n✅ Login Berhasil!");
-            console.log("Response Data:", filteredData);
+            console.log("Address:", address);
         } else {
             console.log("\n⚠️ Login mungkin gagal. Status:", response.status);
         }
