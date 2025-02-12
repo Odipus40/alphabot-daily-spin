@@ -10,7 +10,7 @@ if (!SESSION_TOKEN) {
     process.exit(1);
 }
 
-// Fungsi untuk melakukan login
+// **Fungsi untuk melakukan login**
 async function login() {
     try {
         const response = await axios.get(LOGIN_API, {
@@ -34,9 +34,11 @@ async function login() {
     }
 }
 
-// Fungsi untuk melakukan spin wheel dan mencari 2000 points
+// **Fungsi untuk melakukan spin wheel dan mencari 2000 points**
 async function spinWheel() {
     try {
+        console.log("\n🔍 Mengirim request ke spin wheel...");
+
         const response = await axios.get(SPIN_API, {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
@@ -48,14 +50,21 @@ async function spinWheel() {
         });
 
         if (response.status === 200) {
-            const reward = response.data?.items?.option || "Tidak diketahui";
-            const level = response.data?.items?.level || "Tidak diketahui";
+            console.log("🔍 Debug Response Data:", JSON.stringify(response.data, null, 2)); // Debugging tambahan
 
-            if (reward.includes("2000 points") && level === "best") {
-                console.log("\n🎉 Jackpot! Anda mendapatkan 2000 points! 🔥🔥🔥");
+            // **Cek apakah ada item yang didapatkan dari spin**
+            if (response.data.items && response.data.items.length > 0) {
+                const reward = response.data.items[0].option || "Tidak diketahui";
+                const level = response.data.items[0].level || "Tidak diketahui";
+
+                if (reward.includes("2000 points") && level === "best") {
+                    console.log("\n🎉 Jackpot! Anda mendapatkan 2000 points! 🔥🔥🔥");
+                } else {
+                    console.log("\n🎡 Spin Wheel Berhasil!");
+                    console.log(`🔹 Hasil: ${reward} (${level})`);
+                }
             } else {
-                console.log("\n🎡 Spin Wheel Berhasil!");
-                console.log(`🔹 Hasil: ${reward} (${level})`);
+                console.log("\n⚠️ Spin Wheel Berhasil, tapi tidak ada item yang diterima.");
             }
         } else if (response.status === 304) {
             console.log("\n⚠️ Tidak ada perubahan. Spin Wheel tidak tersedia saat ini.");
@@ -67,5 +76,5 @@ async function spinWheel() {
     }
 }
 
-// Jalankan proses login dan spin wheel
+// **Jalankan proses login dan spin wheel**
 login();
