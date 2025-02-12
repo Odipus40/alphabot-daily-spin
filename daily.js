@@ -1,6 +1,8 @@
 require('dotenv').config();
 const axios = require('axios');
 const moment = require('moment-timezone');
+require('colors');
+const { displayHeader } = require('./helpers');
 
 const LOGIN_API = 'https://www.alphabot.app/api/auth/session';
 const SPIN_API = 'https://www.alphabot.app/api/platformAirdrops/663c16768d466b80012cb656/wheel';
@@ -99,6 +101,8 @@ async function getPoints() {
 }
 
 async function startLoop() {
+    displayHeader(); // Menampilkan header sebelum memulai loop
+
     while (true) {
         await login();
         console.log("\n🕒 Menunggu 24 jam untuk menjalankan ulang...");
