@@ -22,14 +22,7 @@ async function login() {
         });
 
         if (response.status === 200) {
-            const user = response.data?.user || {}; // Pastikan tidak error jika "user" tidak ditemukan
-
-            // Data yang akan ditampilkan
             console.log("\n✅ Login Berhasil!");
-            console.log("🔹 Response Data:");
-            console.log(`   user:`);
-            console.log(`      email: ${user.email || "Tidak ditemukan"}`);
-            console.log(`      address: ${user.address || "Tidak ditemukan"}`);
         } else {
             console.log("\n⚠️ Login mungkin gagal. Status:", response.status);
         }
