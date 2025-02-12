@@ -100,9 +100,12 @@ async function getPoints() {
     }
 }
 
-async function start() {
-    await login();
-    setInterval(login, 24 * 60 * 60 * 1000); // Jalankan setiap 24 jam
+async function startLoop() {
+    while (true) {
+        await login();
+        console.log("\n🕒 Menunggu 24 jam untuk menjalankan ulang...");
+        await new Promise(resolve => setTimeout(resolve, 24 * 60 * 60 * 1000)); // Tunggu 24 jam
+    }
 }
 
-start();
+startLoop();
