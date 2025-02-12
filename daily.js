@@ -37,33 +37,23 @@ async function login() {
 // Fungsi untuk melakukan spin wheel dan mencari 2000 points
 async function spinWheel() {
     try {
-        const response = await axios.get('https://www.alphabot.app/api/platformAirdrops/wheel', {
-    headers: {
-        'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
-    },
-    withCredentials: true
-});
+    const response = await axios.get(API_URL, {
+        headers: {
+            'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
+        },
+        withCredentials: true
+    });
 
-console.log("\n🔍 API Response:", response.data);
-            const reward = response.data?.items?.option || "Tidak diketahui";
-            const level = response.data?.items?.level || "Tidak diketahui";
-
-            if (reward.includes("2000 points") && level === "best") {
-                console.log("\n🎉 Jackpot! Anda mendapatkan 2000 points! 🔥🔥🔥");
-            } else {
-                console.log("\n🎡 Spin Wheel Berhasil!");
-                console.log(`🔹 Hasil: ${reward} (${level})`);
-            }
-        } else if (response.status === 304) {
-            console.log("\n⚠️ Tidak ada perubahan. Spin Wheel tidak tersedia saat ini.");
-        } else {
-            console.log("\n⚠️ Spin Wheel mungkin gagal. Status:", response.status);
-        }
-    } catch (error) {
+    if (response.status === 200) {
+        console.log("✅ Spin Wheel Berhasil!");
+    } else if (response.status === 304) {
+        console.log("⚠️ Spin Wheel tidak berubah (304 Not Modified).");
+    } else {
+        console.log(`⚠️ Status tidak diketahui: ${response.status}`);
+    }
+} catch (error) {
     console.error("\n❌ Spin Wheel Gagal:", error.response?.data || error.message);
-  }
 }
-
 // Jalankan proses login dan spin wheel
 login();
