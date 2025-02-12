@@ -10,9 +10,15 @@ if (!SESSION_TOKEN) {
     process.exit(1);
 }
 
-// **Fungsi untuk melakukan login**
+// Fungsi untuk mendapatkan tanggal dan waktu saat ini
+function getCurrentDateTime() {
+    return new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+}
+
+// Fungsi untuk melakukan login
 async function login() {
     try {
+        console.log(`\n⏳ Menjalankan daily spin pada: ${getCurrentDateTime()}`);
         const response = await axios.get(LOGIN_API, {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
@@ -25,6 +31,7 @@ async function login() {
 
         if (response.status === 200) {
             console.log("\n✅ Login Berhasil!");
+            console.log("🔄 Memulai claim daily spin wheel...");
             await spinWheel(); // Panggil fungsi spin wheel setelah login
         } else {
             console.log("\n⚠️ Login mungkin gagal. Status:", response.status);
@@ -34,7 +41,7 @@ async function login() {
     }
 }
 
-// **Fungsi untuk melakukan spin wheel dan selalu mendapatkan 2000 points**
+// Fungsi untuk melakukan spin wheel dan mencari 2000 points
 async function spinWheel() {
     try {
         const response = await axios.get(SPIN_API, {
@@ -48,17 +55,36 @@ async function spinWheel() {
         });
 
         if (response.status === 200) {
-            console.log("\n🎉 Jackpot! Anda mendapatkan 2000 points! 🔥🔥🔥");
-            console.log("🔹 Hasil: 2000 points (best)");
+            const items = response.data?.items || [];
+            const jackpot = items.find(item => item.option.includes("2000 points") && item.level === "best");
+
+            if (jackpot) {
+                console.log("\n🎉 Jackpot! Anda mendapatkan 2000 points! 🔥🔥🔥");
+                console.log("🔹 Hasil: 2000 points (best)");
+            } else {
+                console.log("\n🎡 Spin Wheel Berhasil, tapi tidak mendapatkan jackpot.");
+            }
         } else if (response.status === 304) {
             console.log("\n⚠️ Tidak ada perubahan. Spin Wheel tidak tersedia saat ini.");
         } else {
             console.log("\n⚠️ Spin Wheel mungkin gagal. Status:", response.status);
         }
     } catch (error) {
-        console.error("\n❌ Spin Wheel Gagal:", error.response ? error.response.data : error.message);
+        if (error.response && error.response.status === 400) {
+            console.error("\n❌ Error: Anda sudah melakukan daily spin wheel hari ini. Coba lagi besok!");
+        } else {
+            console.error("\n❌ Spin Wheel Gagal:", error.response ? error.response.data : error.message);
+        }
     }
 }
 
-// **Jalankan proses login dan spin wheel**
-login();
+// Loop agar script berjalan otomatis setiap 24 jam
+async function startLoop() {
+    while (true) {
+        await login();
+        console.log("\n🕒 Menunggu 24 jam untuk menjalankan ulang...");
+        await new Promise(resolve => setTimeout(resolve, 24 * 60 * 60 * 1000)); // Tunggu 24 jam
+    }
+}
+
+startLoop();
