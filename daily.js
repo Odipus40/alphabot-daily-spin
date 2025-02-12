@@ -21,12 +21,19 @@ async function login() {
             withCredentials: true
         });
 
-        if (typeof response.data !== 'object') {
-            throw new Error("Response bukan JSON! Cek apakah API mengembalikan HTML.");
+        const data = response.data?.data;
+        
+        if (!data) {
+            console.log("Data tidak ditemukan!");
+            return;
         }
 
-        console.log("Login Berhasil!");
-        console.log("Response Data:", response.data);
+        console.log("\n=== Preview Data ===");
+        console.log(`ID: ${data._id || "Tidak tersedia"}`);
+        console.log(`Platform Airdrop ID: ${data.platformAirdropId || "Tidak tersedia"}`);
+        console.log(`Rank: ${data.rank || "Tidak tersedia"}`);
+        console.log(`Total Points: ${data.totalPoints || "Tidak tersedia"}`);
+        console.log(`User ID: ${data.userId || "Tidak tersedia"}`);
 
     } catch (error) {
         console.error("Login Gagal:", error.response ? error.response.data : error.message);
