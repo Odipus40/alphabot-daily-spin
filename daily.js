@@ -1,11 +1,11 @@
 require('dotenv').config();
 const axios = require('axios');
 
-const API_URL = 'https://www.alphabot.app/api/platformAirdrops/';
+const API_URL = 'https://www.alphabot.app/api/auth/session';
 const SESSION_TOKEN = process.env.SESSION_TOKEN;
 
 if (!SESSION_TOKEN) {
-    console.error("Error: SESSION_TOKEN tidak ditemukan di .env");
+    console.error("❌ Error: SESSION_TOKEN tidak ditemukan di .env");
     process.exit(1);
 }
 
@@ -15,28 +15,21 @@ async function login() {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
-                'Referer': 'https://www.alphabot.app/boost',
+                'Referer': 'https://www.alphabot.app/',
                 'Origin': 'https://www.alphabot.app'
             },
             withCredentials: true
         });
 
-        const data = response.data?.data;
-        
-        if (!data) {
-            console.log("Data tidak ditemukan!");
-            return;
+        if (response.status === 200) {
+            console.log("\n✅ Login Berhasil!");
+            console.log("Response Data:", response.data);
+        } else {
+            console.log("\n⚠️ Login mungkin gagal. Status:", response.status);
         }
 
-        console.log("\n=== Preview Data ===");
-        console.log(`ID: ${data._id || "Tidak tersedia"}`);
-        console.log(`Platform Airdrop ID: ${data.platformAirdropId || "Tidak tersedia"}`);
-        console.log(`Rank: ${data.rank || "Tidak tersedia"}`);
-        console.log(`Total Points: ${data.totalPoints || "Tidak tersedia"}`);
-        console.log(`User ID: ${data.userId || "Tidak tersedia"}`);
-
     } catch (error) {
-        console.error("Login Gagal:", error.response ? error.response.data : error.message);
+        console.error("\n❌ Login Gagal:", error.response ? error.response.data : error.message);
     }
 }
 
