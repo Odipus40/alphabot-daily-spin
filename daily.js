@@ -36,6 +36,15 @@ async function login() {
 
 async function spinWheel() {
     try {
+        console.log("🔍 Debug: Mengirim request ke spin wheel...");
+        console.log("🔍 Headers:", {
+            'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
+            'Referer': 'https://www.alphabot.app/boost',
+            'Origin': 'https://www.alphabot.app'
+        });
+        console.log("🔍 URL:", SPIN_URL);
+
         const response = await axios.get(SPIN_URL, {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
@@ -46,16 +55,15 @@ async function spinWheel() {
             withCredentials: true
         });
 
-        if (response.status === 304) {
-            const result = response.data?.items?.find(item => item.level === "best") || {};
-            console.log(`\n🎉 Spin Berhasil! Kamu mendapatkan: ${result.option || "Hadiah tidak ditemukan"}`);
+        if (response.status === 200) {
+            console.log("✅ Spin Wheel Berhasil!");
+            console.log("🔹 Hasil:", response.data);
         } else {
-            console.log("\n⚠️ Spin mungkin gagal. Status:", response.status);
+            console.log("⚠️ Spin Wheel tidak memberikan respon yang diharapkan.");
         }
-
     } catch (error) {
-        console.error("\n❌ Spin Wheel Gagal:", error.response ? error.response.data : error.message);
+        console.error("❌ Spin Wheel Gagal:", error.response ? error.response.data : error.message);
     }
 }
 
-login();
+spinWheel();
