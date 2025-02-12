@@ -37,13 +37,6 @@ async function login() {
 async function spinWheel() {
     try {
         console.log("🔍 Debug: Mengirim request ke spin wheel...");
-        console.log("🔍 Headers:", {
-            'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
-            'Referer': 'https://www.alphabot.app/boost',
-            'Origin': 'https://www.alphabot.app'
-        });
-        console.log("🔍 URL:", SPIN_URL);
 
         const response = await axios.get(SPIN_URL, {
             headers: {
@@ -57,20 +50,22 @@ async function spinWheel() {
 
         if (response.status === 200) {
             console.log("✅ Spin Wheel Berhasil!");
-            console.log("🔹 Hasil:", response.data);
+            console.log("🔹 Hasil:", JSON.stringify(response.data, null, 2));
         } else {
-            console.log("⚠️ Spin Wheel tidak memberikan respon yang diharapkan.");
+            console.log(`⚠️ Spin mungkin gagal. Status: ${response.status}`);
         }
     } catch (error) {
-    if (error.response) {
         console.error("❌ Spin Wheel Gagal:");
-        console.error("🔹 Status Code:", error.response.status);
-        console.error("🔹 Response Data:", JSON.stringify(error.response.data, null, 2));
-        console.error("🔹 Headers:", JSON.stringify(error.response.headers, null, 2));
-    } else if (error.request) {
-        console.error("❌ Tidak ada respon dari server.");
-        console.error("🔹 Request Data:", error.request);
-    } else {
-        console.error("❌ Error:", error.message);
+        if (error.response) {
+            console.error("🔹 Status Code:", error.response.status);
+            console.error("🔹 Response Data:", JSON.stringify(error.response.data, null, 2));
+            console.error("🔹 Headers:", JSON.stringify(error.response.headers, null, 2));
+        } else if (error.request) {
+            console.error("❌ Tidak ada respon dari server.");
+            console.error("🔹 Request Data:", error.request);
+        } else {
+            console.error("❌ Error:", error.message);
+        }
     }
 }
+
