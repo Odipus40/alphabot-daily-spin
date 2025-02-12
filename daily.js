@@ -37,17 +37,15 @@ async function login() {
 // Fungsi untuk melakukan spin wheel dan mencari 2000 points
 async function spinWheel() {
     try {
-        const response = await axios.get(SPIN_API, {
-            headers: {
-                'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
-                'Referer': 'https://www.alphabot.app/boost',
-                'Origin': 'https://www.alphabot.app'
-            },
-            withCredentials: true
-        });
+        const response = await axios.get('https://www.alphabot.app/api/platformAirdrops/wheel', {
+    headers: {
+        'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
+    },
+    withCredentials: true
+});
 
-        if (response.status === 200) {
+console.log("\n🔍 API Response:", response.data);
             const reward = response.data?.items?.option || "Tidak diketahui";
             const level = response.data?.items?.level || "Tidak diketahui";
 
