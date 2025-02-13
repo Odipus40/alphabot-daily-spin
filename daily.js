@@ -9,7 +9,8 @@ const SPIN_API = 'https://www.alphabot.app/api/platformAirdrops/663c16768d466b80
 const POINTS_API = 'https://www.alphabot.app/api/platformAirdrops/663c16768d466b80012cb656/points';
 const SESSION_TOKEN = process.env.SESSION_TOKEN;
 
-const WAIT_TIME = 24 * 60 * 60 * 1000; // 24 jam dalam milidetik
+const RESET_HOUR = 7; // Alphabot reset daily spin jam 07:00 WIB
+const RETRY_INTERVAL = 60 * 60 * 1000; // Coba lagi dalam 1 jam jika spin gagal sebelum reset
 
 if (!SESSION_TOKEN) {
     console.error("❌ Error: SESSION_TOKEN tidak ditemukan di .env");
@@ -19,6 +20,11 @@ if (!SESSION_TOKEN) {
 // Fungsi untuk mendapatkan timestamp lengkap
 function getCurrentTimestamp() {
     return moment().tz('Asia/Jakarta').format('DD/MM/YYYY, HH:mm:ss');
+}
+
+// Cek apakah saat ini sebelum jam reset
+function isBeforeReset() {
+    return moment().tz('Asia/Jakarta').hour() < RESET_HOUR;
 }
 
 async function login() {
@@ -65,12 +71,19 @@ async function spinWheel() {
 
             console.log(`🎉 [${getCurrentTimestamp()}] Spin Wheel Berhasil!`);
             console.log(`🔹 [${getCurrentTimestamp()}] Hasil: ${result}`);
+            return;
         } else {
             console.log(`⚠️ [${getCurrentTimestamp()}] Spin Wheel mungkin gagal. Status: ${response.status}`);
         }
     } catch (error) {
         if (error.response && error.response.status === 400) {
-            console.warn(`🚫 [${getCurrentTimestamp()}] Anda sudah melakukan daily spin hari ini. Coba lagi besok!`);
+            if (isBeforeReset()) {
+                console.warn(`🚫 [${getCurrentTimestamp()}] Spin gagal, tapi belum reset harian. Coba lagi dalam 1 jam.`);
+                setTimeout(spinWheel, RETRY_INTERVAL);
+                return;
+            } else {
+                console.warn(`🚫 [${getCurrentTimestamp()}] Anda sudah melakukan daily spin hari ini. Coba lagi setelah reset jam 07:00 WIB.`);
+            }
         } else {
             console.error(`❌ [${getCurrentTimestamp()}] Spin Wheel Gagal:`, error.response?.data || error.message);
         }
@@ -113,7 +126,7 @@ async function startRoutine() {
     const nextRun = moment().tz('Asia/Jakarta').add(24, 'hours').format('DD/MM/YYYY, HH:mm:ss');
     console.log(`\n⏳ [${getCurrentTimestamp()}] Menunggu 24 jam untuk menjalankan ulang pada: ${nextRun} WIB\n`);
 
-    await new Promise(resolve => setTimeout(resolve, WAIT_TIME));
+    await new Promise(resolve => setTimeout(resolve, 24 * 60 * 60 * 1000));
 
     await startRoutine();
 }
