@@ -16,24 +16,21 @@ if (!SESSION_TOKEN) {
     process.exit(1);
 }
 
-// Fungsi untuk mendapatkan timestamp lengkap
+const HEADERS = {
+    'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
+    'User-Agent': 'Mozilla/5.0',
+    'Referer': 'https://www.alphabot.app/boost',
+    'Origin': 'https://www.alphabot.app'
+};
+
 function getCurrentTimestamp() {
     return moment().tz('Asia/Jakarta').format('DD/MM/YYYY, HH:mm:ss');
 }
 
 async function login() {
     console.log(`🕒 [${getCurrentTimestamp()}] Memulai proses login...`);
-
     try {
-        const response = await axios.get(LOGIN_API, {
-            headers: {
-                'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
-                'User-Agent': 'Mozilla/5.0',
-                'Referer': 'https://www.alphabot.app/boost',
-                'Origin': 'https://www.alphabot.app'
-            }
-        });
-
+        const response = await axios.get(LOGIN_API, { headers: HEADERS });
         if (response.status === 200) {
             console.log(`✅ [${getCurrentTimestamp()}] Login Berhasil!`);
             console.log(`🔄 [${getCurrentTimestamp()}] Memulai claim daily spin wheel...`);
@@ -50,21 +47,13 @@ async function login() {
 async function spinWheel() {
     try {
         console.log(`🎡 [${getCurrentTimestamp()}] Melakukan request daily spin...`);
-        const response = await axios.post(SPIN_API, {}, {
-            headers: {
-                'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
-                'User-Agent': 'Mozilla/5.0',
-                'Referer': 'https://www.alphabot.app/boost',
-                'Origin': 'https://www.alphabot.app'
-            }
-        });
-
+        const response = await axios.post(SPIN_API, {}, { headers: HEADERS });
         if (response.status === 200) {
             const items = response.data?.items || [];
-            let result = items.length > 0 ? items.map(item => item.option).join(', ') : "Tidak diketahui";
-
+            let result = items.length > 0 ? items.map(item => item.option.trim()).join(', ') : "Tidak diketahui";
             console.log(`🎉 [${getCurrentTimestamp()}] Spin Wheel Berhasil!`);
             console.log(`🔹 [${getCurrentTimestamp()}] Hasil: ${result}`);
+            await autoClaimPoints(items);
         } else {
             console.log(`⚠️ [${getCurrentTimestamp()}] Spin Wheel mungkin gagal. Status: ${response.status}`);
         }
@@ -75,22 +64,23 @@ async function spinWheel() {
             console.error(`❌ [${getCurrentTimestamp()}] Spin Wheel Gagal:`, error.response?.data || error.message);
         }
     }
-
     await getPoints();
+}
+
+async function autoClaimPoints(items) {
+    const validPoints = ["500 points", "1000 points", "2000 points"];
+    const earnedPoints = items.map(item => item.option.trim());
+    for (const point of validPoints) {
+        if (earnedPoints.includes(point)) {
+            console.log(`✅ [${getCurrentTimestamp()}] Anda mendapatkan ${point}!`);
+        }
+    }
 }
 
 async function getPoints() {
     try {
         console.log(`💰 [${getCurrentTimestamp()}] Mengambil data total poin...`);
-        const response = await axios.get(POINTS_API, {
-            headers: {
-                'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
-                'User-Agent': 'Mozilla/5.0',
-                'Referer': 'https://www.alphabot.app/boost',
-                'Origin': 'https://www.alphabot.app'
-            }
-        });
-
+        const response = await axios.get(POINTS_API, { headers: HEADERS });
         if (response.status === 200 && response.data?.points !== undefined && response.data?.rank !== undefined) {
             console.log(`🏆 [${getCurrentTimestamp()}] Total Points: ${response.data.points}`);
             console.log(`📊 [${getCurrentTimestamp()}] Rank Anda: ${response.data.rank}`);
@@ -109,14 +99,10 @@ async function startRoutine() {
     } catch (error) {
         console.error(`🚨 [${getCurrentTimestamp()}] Terjadi error dalam eksekusi script:`, error);
     }
-
     const nextRun = moment().tz('Asia/Jakarta').add(24, 'hours').format('DD/MM/YYYY, HH:mm:ss');
     console.log(`\n⏳ [${getCurrentTimestamp()}] Menunggu 24 jam untuk menjalankan ulang pada: ${nextRun} WIB\n`);
-
     await new Promise(resolve => setTimeout(resolve, WAIT_TIME));
-
     await startRoutine();
 }
 
-// Jalankan pertama kali
 startRoutine();
