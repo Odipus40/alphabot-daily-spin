@@ -60,11 +60,11 @@ async function spinWheel() {
 
         if (response.status === 200) {
             const items = response.data?.items || [];
-            let result = "Tidak diketahui";
+            let result = { points: "Tidak diketahui", level: "Tidak diketahui" };
 
             // Pastikan ada item yang valid
             if (items.length > 0) {
-                // Pilih satu hasil secara acak
+                // Pilih satu hasil secara acak jika ada item valid
                 const selectedItem = items[Math.floor(Math.random() * items.length)];
                 result = {
                     points: selectedItem.option.trim().replace(/\s*points$/, ''),
