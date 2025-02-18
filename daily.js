@@ -12,7 +12,7 @@ const SESSION_TOKEN = process.env.SESSION_TOKEN;
 const WAIT_TIME = 24 * 60 * 60 * 1000; // 24 jam dalam milidetik
 
 if (!SESSION_TOKEN) {
-    console.error("❌ Error: SESSION_TOKEN tidak ditemukan di .env");
+    console.error(" Error: SESSION_TOKEN tidak ditemukan di .env");
     process.exit(1);
 }
 
@@ -21,7 +21,7 @@ function getCurrentTimestamp() {
 }
 
 async function login() {
-    console.log(`🕒 [${getCurrentTimestamp()}] Memulai proses login...`);
+    console.log(` [${getCurrentTimestamp()}] Memulai proses login...`);
 
     try {
         const response = await axios.get(LOGIN_API, {
@@ -35,14 +35,14 @@ async function login() {
         });
 
         if (response.status === 200) {
-            console.log(`✅ [${getCurrentTimestamp()}] Login Berhasil!`);
-            console.log(`🔄 [${getCurrentTimestamp()}] Memulai claim daily spin wheel...`);
+            console.log(` [${getCurrentTimestamp()}] Login Berhasil!`);
+            console.log(` [${getCurrentTimestamp()}] Memulai claim daily spin wheel...`);
             await spinWheel();
         } else {
-            console.log(`⚠️ [${getCurrentTimestamp()}] Login mungkin gagal. Status: ${response.status}`);
+            console.log(` [${getCurrentTimestamp()}] Login mungkin gagal. Status: ${response.status}`);
         }
     } catch (error) {
-        console.error(`❌ [${getCurrentTimestamp()}] Login Gagal:`, error.response ? error.response.data : error.message);
+        console.error(` [${getCurrentTimestamp()}] Login Gagal:`, error.response ? error.response.data : error.message);
     }
 }
 
@@ -73,18 +73,16 @@ async function spinWheel() {
             }
 
             // Tampilkan hanya hasil yang didapatkan
-            console.log(`🎡 [${getCurrentTimestamp()}] Spin Wheel Berhasil!`);
-            console.log(`🔹 [${getCurrentTimestamp()}] Hasil: ${result.points} points, Level: ${result.level}`);
+            console.log(` [${getCurrentTimestamp()}] Spin Wheel Berhasil!`);
+            console.log(` [${getCurrentTimestamp()}] Hasil: ${result.points} points, Level: ${result.level}`);
 
             await getPoints();
         } else {
-            console.log(`⚠️ [${getCurrentTimestamp()}] Spin Wheel mungkin gagal. Status: ${response.status}`);
+            console.log(` [${getCurrentTimestamp()}] Spin Wheel mungkin gagal. Status: ${response.status}`);
         }
     } catch (error) {
-        console.error(`❌ [${getCurrentTimestamp()}] Spin Wheel Gagal: Anda sudah claim spin wheel hari ini, coba lagi besok!!!`, error.response ? error.response.data : error.message);
+        console.error(` [${getCurrentTimestamp()}] Spin Wheel Gagal: Anda sudah claim spin wheel hari ini, coba lagi besok!!!`, error.response ? error.response.data : error.message);
     }
-    // Meskipun spin gagal, tetap tampilkan points dan rank
-    await getPoints(result);
 }
 
 async function getPoints() {
@@ -101,14 +99,13 @@ async function getPoints() {
         });
 
         if (response.status === 200) {
-            const { points, rank } = response.data;
-            console.log(`🏆 [${getCurrentTimestamp()}] Total Points: ${points}`);
-            console.log(`📊 [${getCurrentTimestamp()}] Rank Anda: ${rank}`);
+            const { points, rank } = response.data;console.log(` [${getCurrentTimestamp()}] Total Points: ${points}`);
+            console.log(` [${getCurrentTimestamp()}] Rank Anda: ${rank}`);
         } else {
-            console.log(`⚠️ [${getCurrentTimestamp()}] Gagal mendapatkan informasi poin. Status: ${response.status}`);
+            console.log(` [${getCurrentTimestamp()}] Gagal mendapatkan informasi poin. Status: ${response.status}`);
         }
     } catch (error) {
-        console.error(`❌ [${getCurrentTimestamp()}] Gagal mendapatkan data poin:`, error.response ? error.response.data : error.message);
+        console.error(` [${getCurrentTimestamp()}] Gagal mendapatkan data poin:`, error.response ? error.response.data : error.message);
     }
 }
 
@@ -117,11 +114,11 @@ async function startRoutine() {
         displayHeader();
         await login();
     } catch (error) {
-        console.error(`🚨 [${getCurrentTimestamp()}] Terjadi error dalam eksekusi script:`, error.message);
+        console.error(` [${getCurrentTimestamp()}] Terjadi error dalam eksekusi script:`, error.message);
     }
 
     const nextRun = moment().tz('Asia/Jakarta').add(24, 'hours').format('DD/MM/YYYY, HH:mm:ss');
-    console.log(`\n⏳ [${getCurrentTimestamp()}] Menunggu 24 jam untuk menjalankan ulang pada: ${nextRun} WIB\n`);
+    console.log(`\n [${getCurrentTimestamp()}] Menunggu 24 jam untuk menjalankan ulang pada: ${nextRun} WIB\n`);
 
     await new Promise(resolve => setTimeout(resolve, WAIT_TIME));
 
