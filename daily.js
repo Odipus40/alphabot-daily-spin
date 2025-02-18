@@ -58,20 +58,25 @@ async function spinWheel() {
             }
         });
 
-        console.log("DEBUG response:", response.data);
-
         if (response.status === 200) {
             const items = response.data?.items || [];
             let result = "Tidak diketahui";
 
-            if (items.length > 0 && items.some(item => item.option)) {
-                result = items.map(item => item.option.trim()).join(', ');
+            // Pastikan ada item yang valid
+            if (items.length > 0) {
+                // Pilih satu hasil secara acak
+                const selectedItem = items[Math.floor(Math.random() * items.length)];
+                result = {
+                    points: selectedItem.option.trim().replace(/\s*points$/, ''),
+                    level: selectedItem.level
+                };
             } else {
                 console.log("⚠️ Tidak ada items yang valid dalam respons API.");
             }
 
+            // Tampilkan hanya hasil yang didapatkan
             console.log(`🎡 [${getCurrentTimestamp()}] Spin Wheel Berhasil!`);
-            console.log(`🔹 [${getCurrentTimestamp()}] Hasil: ${result}`);
+            console.log(`🔹 [${getCurrentTimestamp()}] Hasil: ${result.points} points, Level: ${result.level}`);
 
             await getPoints();
         } else {
