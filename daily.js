@@ -83,6 +83,8 @@ async function spinWheel() {
     } catch (error) {
         console.error(`❌ [${getCurrentTimestamp()}] Spin Wheel Gagal: Anda sudah claim spin wheel hari ini, coba lagi besok!!!`, error.response ? error.response.data : error.message);
     }
+    // Meskipun spin gagal, tetap tampilkan points dan rank
+    await getPoints(result);
 }
 
 async function getPoints() {
