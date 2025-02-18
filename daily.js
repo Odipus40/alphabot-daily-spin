@@ -16,7 +16,6 @@ if (!SESSION_TOKEN) {
     process.exit(1);
 }
 
-// Fungsi untuk mendapatkan timestamp lengkap
 function getCurrentTimestamp() {
     return moment().tz('Asia/Jakarta').format('DD/MM/YYYY, HH:mm:ss');
 }
@@ -30,7 +29,8 @@ async function login() {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
                 'User-Agent': 'Mozilla/5.0',
                 'Referer': 'https://www.alphabot.app/boost',
-                'Origin': 'https://www.alphabot.app'
+                'Origin': 'https://www.alphabot.app',
+                'Cache-Control': 'no-cache'
             }
         });
 
@@ -48,47 +48,50 @@ async function login() {
 
 async function spinWheel() {
     try {
-        const response = await axios.post(SPIN_API, {}, {
+        const response = await axios.post(SPIN_API, { timestamp: Date.now() }, {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
                 'User-Agent': 'Mozilla/5.0',
                 'Referer': 'https://www.alphabot.app/boost',
-                'Origin': 'https://www.alphabot.app'
+                'Origin': 'https://www.alphabot.app',
+                'Cache-Control': 'no-cache'
             }
         });
+
+        console.log("DEBUG response:", response.data);
 
         if (response.status === 200) {
             const items = response.data?.items || [];
             let result = "Tidak diketahui";
-            
-            if (items.length > 0) {
-                result = items.map(item => item.option.trim()).join(', '); // Menghapus spasi tambahan
+
+            if (items.length > 0 && items.some(item => item.option)) {
+                result = items.map(item => item.option.trim()).join(', ');
+            } else {
+                console.log("⚠️ Tidak ada items yang valid dalam respons API.");
             }
 
             console.log(`🎡 [${getCurrentTimestamp()}] Spin Wheel Berhasil!`);
             console.log(`🔹 [${getCurrentTimestamp()}] Hasil: ${result}`);
-            
+
             await getPoints();
         } else {
             console.log(`⚠️ [${getCurrentTimestamp()}] Spin Wheel mungkin gagal. Status: ${response.status}`);
         }
     } catch (error) {
-        if (error.response && error.response.status === 400) {
-            console.error(`❌ [${getCurrentTimestamp()}] Error: Anda sudah melakukan daily spin wheel hari ini. Coba lagi besok!`);
-        } else {
-            console.error(`❌ [${getCurrentTimestamp()}] Spin Wheel Gagal:`, error.response ? error.response.data : error.message);
-        }
+        console.error(`❌ [${getCurrentTimestamp()}] Spin Wheel Gagal:`, error.response ? error.response.data : error.message);
     }
 }
 
 async function getPoints() {
     try {
+        await new Promise(resolve => setTimeout(resolve, 5000)); // Tunggu 5 detik sebelum mengambil poin
         const response = await axios.get(POINTS_API, {
             headers: {
                 'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
                 'User-Agent': 'Mozilla/5.0',
                 'Referer': 'https://www.alphabot.app/boost',
-                'Origin': 'https://www.alphabot.app'
+                'Origin': 'https://www.alphabot.app',
+                'Cache-Control': 'no-cache'
             }
         });
 
@@ -104,7 +107,6 @@ async function getPoints() {
     }
 }
 
-// Fungsi utama untuk menjalankan bot secara otomatis setiap hari
 async function startRoutine() {
     try {
         displayHeader();
@@ -113,16 +115,12 @@ async function startRoutine() {
         console.error(`🚨 [${getCurrentTimestamp()}] Terjadi error dalam eksekusi script:`, error.message);
     }
 
-    // Menampilkan waktu eksekusi berikutnya dalam format lengkap
     const nextRun = moment().tz('Asia/Jakarta').add(24, 'hours').format('DD/MM/YYYY, HH:mm:ss');
     console.log(`\n⏳ [${getCurrentTimestamp()}] Menunggu 24 jam untuk menjalankan ulang pada: ${nextRun} WIB\n`);
 
-    // Tunggu 24 jam sebelum menjalankan ulang
     await new Promise(resolve => setTimeout(resolve, WAIT_TIME));
 
-    // Jalankan ulang
     await startRoutine();
 }
 
-// Jalankan pertama kali
 startRoutine();
