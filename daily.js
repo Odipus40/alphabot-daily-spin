@@ -81,7 +81,7 @@ async function spinWheel() {
             console.log(`⚠️ [${getCurrentTimestamp()}] Spin Wheel mungkin gagal. Status: ${response.status}`);
         }
     } catch (error) {
-        console.error(`❌ [${getCurrentTimestamp()}] Spin Wheel Gagal:`, error.response ? error.response.data : error.message);
+        console.error(`❌ [${getCurrentTimestamp()}] Spin Wheel Gagal: Anda sudah claim spin wheel hari ini, coba lagi besok!!!`, error.response ? error.response.data : error.message);
     }
 }
 
