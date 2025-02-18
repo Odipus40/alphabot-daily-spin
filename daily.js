@@ -60,18 +60,16 @@ async function spinWheel() {
 
         if (response.status === 200) {
             const items = response.data?.items || [];
-            let result = { points: "Tidak diketahui", level: "Tidak diketahui" };
+            let result = "Tidak diketahui";
 
             // Pastikan ada item yang valid
-            if (items.length > 0) {
-                // Pilih satu hasil secara acak jika ada item valid
+            if (items.length > 0 && items.every(item => item.option && item.level)) {
+                // Pilih satu hasil secara acak
                 const selectedItem = items[Math.floor(Math.random() * items.length)];
                 result = {
                     points: selectedItem.option.trim().replace(/\s*points$/, ''),
                     level: selectedItem.level
                 };
-            } else {
-                console.log("⚠️ Tidak ada items yang valid dalam respons API.");
             }
 
             // Tampilkan hanya hasil yang didapatkan
