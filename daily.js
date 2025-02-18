@@ -62,7 +62,7 @@ async function spinWheel() {
             let result = "Tidak diketahui";
             
             if (items.length > 0) {
-                result = items.map(item => item.option).join(', ');
+                result = items.map(item => item.option.trim()).join(', '); // Menghapus spasi tambahan
             }
 
             console.log(`🎡 [${getCurrentTimestamp()}] Spin Wheel Berhasil!`);
