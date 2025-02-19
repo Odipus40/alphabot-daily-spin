@@ -16,7 +16,6 @@ if (!SESSION_TOKEN) {
     process.exit(1);
 }
 
-// Fungsi untuk mendapatkan timestamp lengkap
 function getCurrentTimestamp() {
     return moment().tz('Asia/Jakarta').format('DD/MM/YYYY, HH:mm:ss');
 }
@@ -58,16 +57,9 @@ async function spinWheel() {
         });
 
         if (response.status === 200) {
-            const items = response.data?.items || [];
-            let result = "Tidak diketahui";
-            
-            if (items.length > 0) {
-                result = items.map(item => item.option).join(', ');
-            }
-
+            const result = response.data.index;
             console.log(`🎡 [${getCurrentTimestamp()}] Spin Wheel Berhasil!`);
-            console.log(`🔹 [${getCurrentTimestamp()}] Hasil: ${result}`);
-            
+            console.log(`🔹 [${getCurrentTimestamp()}] Hasil: ${result.option} (${result.level})`);
             await getPoints();
         } else {
             console.log(`⚠️ [${getCurrentTimestamp()}] Spin Wheel mungkin gagal. Status: ${response.status}`);
@@ -104,7 +96,6 @@ async function getPoints() {
     }
 }
 
-// Fungsi utama untuk menjalankan bot secara otomatis setiap hari
 async function startRoutine() {
     try {
         displayHeader();
@@ -113,16 +104,11 @@ async function startRoutine() {
         console.error(`🚨 [${getCurrentTimestamp()}] Terjadi error dalam eksekusi script:`, error.message);
     }
 
-    // Menampilkan waktu eksekusi berikutnya dalam format lengkap
     const nextRun = moment().tz('Asia/Jakarta').add(24, 'hours').format('DD/MM/YYYY, HH:mm:ss');
     console.log(`\n⏳ [${getCurrentTimestamp()}] Menunggu 24 jam untuk menjalankan ulang pada: ${nextRun} WIB\n`);
 
-    // Tunggu 24 jam sebelum menjalankan ulang
     await new Promise(resolve => setTimeout(resolve, WAIT_TIME));
-
-    // Jalankan ulang
     await startRoutine();
 }
 
-// Jalankan pertama kali
 startRoutine();
