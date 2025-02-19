@@ -57,9 +57,32 @@ async function spinWheel() {
         });
 
         if (response.status === 200) {
-            const result = response.data.index;
-            console.log(`🎡 [${getCurrentTimestamp()}] Spin Wheel Berhasil!`);
-            console.log(`🔹 [${getCurrentTimestamp()}] Hasil: ${result.option} (${result.level})`);
+            const spinIndex = response.data.index; // Dapatkan index hasil spin
+
+            if (spinIndex !== undefined) {
+                // Ambil daftar reward dari API GET sebelumnya
+                const rewardResponse = await axios.get(SPIN_API, {
+                    headers: {
+                        'Cookie': `__Secure-next-auth.session-token=${SESSION_TOKEN}`,
+                        'User-Agent': 'Mozilla/5.0',
+                        'Referer': 'https://www.alphabot.app/boost',
+                        'Origin': 'https://www.alphabot.app'
+                    }
+                });
+
+                const rewardList = rewardResponse.data.items;
+                const reward = rewardList[spinIndex]; // Cocokkan index dengan daftar hadiah
+
+                if (reward) {
+                    console.log(`🎡 [${getCurrentTimestamp()}] Spin Wheel Berhasil!`);
+                    console.log(`🔹 [${getCurrentTimestamp()}] Hasil: ${reward.option} (${reward.level})`);
+                } else {
+                    console.log(`⚠️ [${getCurrentTimestamp()}] Gagal mendapatkan detail hadiah dari index: ${spinIndex}`);
+                }
+            } else {
+                console.log(`⚠️ [${getCurrentTimestamp()}] API tidak mengembalikan index yang valid.`);
+            }
+
             await getPoints();
         } else {
             console.log(`⚠️ [${getCurrentTimestamp()}] Spin Wheel mungkin gagal. Status: ${response.status}`);
