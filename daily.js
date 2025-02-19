@@ -12,7 +12,7 @@ const SESSION_TOKEN = process.env.SESSION_TOKEN;
 const WAIT_TIME = 24 * 60 * 60 * 1000; // 24 jam dalam milidetik
 
 if (!SESSION_TOKEN) {
-    console.error("❌ Error: SESSION_TOKEN tidak ditemukan di .env");
+    console.error("❌ Error: SESSION_TOKEN not found .env");
     process.exit(1);
 }
 
@@ -21,7 +21,7 @@ function getCurrentTimestamp() {
 }
 
 async function login() {
-    console.log(`🕒 [${getCurrentTimestamp()}] Memulai proses login...`);
+    console.log(`[${getCurrentTimestamp()}] 🕒 Starting login your account...`);
 
     try {
         const response = await axios.get(LOGIN_API, {
@@ -34,14 +34,14 @@ async function login() {
         });
 
         if (response.status === 200) {
-            console.log(`✅ [${getCurrentTimestamp()}] Login Berhasil!`);
-            console.log(`🔄 [${getCurrentTimestamp()}] Memulai claim daily spin wheel...`);
+            console.log(`[${getCurrentTimestamp()}] ✅ Login successfull...`);
+            console.log(`[${getCurrentTimestamp()}] 🔄 Start claiming daily spin wheel...`);
             await spinWheel();
         } else {
-            console.log(`⚠️ [${getCurrentTimestamp()}] Login mungkin gagal. Status: ${response.status}`);
+            console.log(`[${getCurrentTimestamp()}] ⚠️ Login maybe failed. Status: ${response.status}`);
         }
     } catch (error) {
-        console.error(`❌ [${getCurrentTimestamp()}] Login Gagal:`, error.response ? error.response.data : error.message);
+        console.error(`[${getCurrentTimestamp()}] ❌ Login failed!!!:`, error.response ? error.response.data : error.message);
     }
 }
 
@@ -74,24 +74,24 @@ async function spinWheel() {
                 const reward = rewardList[spinIndex]; // Cocokkan index dengan daftar hadiah
 
                 if (reward) {
-                    console.log(`🎡 [${getCurrentTimestamp()}] Spin Wheel Berhasil!`);
-                    console.log(`🔹 [${getCurrentTimestamp()}] Hasil: ${reward.option} (${reward.level})`);
+                    console.log(`[${getCurrentTimestamp()}] 🎡 Spin Wheel Successful...`);
+                    console.log(`[${getCurrentTimestamp()}] 🔹 Result: ${reward.option} (${reward.level})`);
                 } else {
-                    console.log(`⚠️ [${getCurrentTimestamp()}] Gagal mendapatkan detail hadiah dari index: ${spinIndex}`);
+                    console.log(`[${getCurrentTimestamp()}] ⚠️ Failed to get reward details from index: ${spinIndex}`);
                 }
             } else {
-                console.log(`⚠️ [${getCurrentTimestamp()}] API tidak mengembalikan index yang valid.`);
+                console.log(`[${getCurrentTimestamp()}] ⚠️ API did not return a valid index`);
             }
 
             await getPoints();
         } else {
-            console.log(`⚠️ [${getCurrentTimestamp()}] Spin Wheel mungkin gagal. Status: ${response.status}`);
+            console.log(`[${getCurrentTimestamp()}] ⚠️ Spin Wheel may failed. Status: ${response.status}`);
         }
     } catch (error) {
         if (error.response && error.response.status === 400) {
-            console.error(`❌ [${getCurrentTimestamp()}] Error: Anda sudah melakukan daily spin wheel hari ini. Coba lagi besok!`);
+            console.error(`[${getCurrentTimestamp()}] ❌ Error: You have already done claim daily spin wheel today, Try again tomorrow!!!`);
         } else {
-            console.error(`❌ [${getCurrentTimestamp()}] Spin Wheel Gagal:`, error.response ? error.response.data : error.message);
+            console.error(`[${getCurrentTimestamp()}] ❌ Spin Wheel Failed!!!:`, error.response ? error.response.data : error.message);
         }
     }
 }
@@ -109,13 +109,13 @@ async function getPoints() {
 
         if (response.status === 200) {
             const { points, rank } = response.data;
-            console.log(`🏆 [${getCurrentTimestamp()}] Total Points: ${points}`);
-            console.log(`📊 [${getCurrentTimestamp()}] Rank Anda: ${rank}`);
+            console.log(`[${getCurrentTimestamp()}] 🏆 Total Your Points: ${points}`);
+            console.log(`[${getCurrentTimestamp()}] 📊 Rank: ${rank}`);
         } else {
-            console.log(`⚠️ [${getCurrentTimestamp()}] Gagal mendapatkan informasi poin. Status: ${response.status}`);
+            console.log(`[${getCurrentTimestamp()}] ⚠️ Failed to get points information. Status: ${response.status}`);
         }
     } catch (error) {
-        console.error(`❌ [${getCurrentTimestamp()}] Gagal mendapatkan data poin:`, error.response ? error.response.data : error.message);
+        console.error(`[${getCurrentTimestamp()}] ❌ Failed to get point data:`, error.response ? error.response.data : error.message);
     }
 }
 
@@ -124,11 +124,11 @@ async function startRoutine() {
         displayHeader();
         await login();
     } catch (error) {
-        console.error(`🚨 [${getCurrentTimestamp()}] Terjadi error dalam eksekusi script:`, error.message);
+        console.error(`[${getCurrentTimestamp()}] 🚨 Error occurred in the execution of the script:`, error.message);
     }
 
     const nextRun = moment().tz('Asia/Jakarta').add(24, 'hours').format('DD/MM/YYYY, HH:mm:ss');
-    console.log(`\n⏳ [${getCurrentTimestamp()}] Menunggu 24 jam untuk menjalankan ulang pada: ${nextRun} WIB\n`);
+    console.log(`\n[${getCurrentTimestamp()}] ⏳ Daily spin wheel complete waiting 24 hours to rerun on: ${nextRun} WIB\n`);
 
     await new Promise(resolve => setTimeout(resolve, WAIT_TIME));
     await startRoutine();
