@@ -9,7 +9,7 @@ https://www.alphabot.app/boost/Y4K6O6
 git clone https://github.com/Odipus40/alphabot-daily-spin.git
 ```
 
-➖ Directory Magic Newton:
+➖ Directory Alphabot:
 ```
 cd alphabot-daily-spin
 ```
