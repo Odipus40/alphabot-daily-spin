@@ -24,7 +24,7 @@ npm install
 nano .env
 ```
 `
-fill_your_cookie_session
+SESSION_TOKEN=fill_your_cookie_session
 `
 
 
