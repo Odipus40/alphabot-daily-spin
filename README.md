@@ -6,12 +6,12 @@ https://www.alphabot.app/boost/Y4K6O6
 
 ➖ Clone repository:
 ```
-git clone https://github.com/Odipus40/magic-newton-bot.git
+git clone https://github.com/Odipus40/alphabot-daily-spin.git
 ```
 
 ➖ Directory Magic Newton:
 ```
-cd magic-newton-bot
+cd alphabot-daily-spin
 ```
 
 ➖ install modules
@@ -19,9 +19,9 @@ cd magic-newton-bot
 npm install
 ```
 
-➖ Create folder data.txt
+➖ Create folder .env
 ```
-nano data.txt
+nano .env
 ```
 `
 fill_your_cookie_session
@@ -30,11 +30,11 @@ fill_your_cookie_session
 
 ➖ Create Screen
 ```
-screen -S magicnewton
+screen -S alphabot
 ```
 ➖ Run
 ```
-node index.js
+node daily.js
 ```
 
 ➖ Exit screen:
